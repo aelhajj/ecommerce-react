@@ -5,6 +5,8 @@ import './sign-in.styles.scss';
 import FormInput from '../form-input/form-input.component';
 import CustomButton from '../custom-button/custom-button.component';
 
+import { signInWithGoogle } from '../../firebase/firebase.utils';
+
 // We are using a class so we can save what the users types in
 class SignIn extends React.Component {
     constructor(props) {
@@ -39,7 +41,7 @@ class SignIn extends React.Component {
                     value={this.state.email} 
                     label='Email'
                     handleChange={this.handleChange} 
-                    required 
+                    required
                     />
                     <FormInput 
                     name='password' 
@@ -47,10 +49,12 @@ class SignIn extends React.Component {
                     handleChange={this.handleChange} 
                     value={this.state.password} 
                     label='Password'
-                    required 
+                    required
                     />
                     <CustomButton type='submit' value='Submit form'> Sign In </CustomButton>
+                    <CustomButton onClick={signInWithGoogle}> Sign in with Google</CustomButton>
                 </form>
+                
             </div>
         );
     }
