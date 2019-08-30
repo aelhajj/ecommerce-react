@@ -7,7 +7,7 @@ import Homepage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
 import Header from './components/header/header.component';
 import SignInUp from './components/sign-in-up/sign-in-up.component';
-import {auth} from './firebase/firebase.utils';
+import {auth, createUserProfileDocument} from './firebase/firebase.utils';
 
 // class component so we can have access to state (for auth)
 class App extends React.Component {
@@ -24,10 +24,26 @@ class App extends React.Component {
   componentDidMount() {
     
     //set user as current user when authentification is valid
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(user => {
-      this.setState({currentUser : user });
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
 
-      console.log(user);
+      if(userAuth) {
+
+        const userRef = await createUserProfileDocument(userAuth);
+
+        //snapshot allows to check if doc exist, and get data by data method
+        userRef.onSnapshot(snapShot => {
+          // get data of user in database 
+          this.setState({
+            currentUser: {
+              id: snapShot.id,
+              ...snapShot.data()
+            }
+          });
+        });
+      }
+      else {
+        this.setState({currentUser: userAuth });
+      }
     })
   }
 
