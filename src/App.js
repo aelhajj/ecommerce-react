@@ -1,5 +1,6 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import './App.css';
 
@@ -8,21 +9,18 @@ import ShopPage from './pages/shop/shop.component';
 import Header from './components/header/header.component';
 import SignInUp from './components/sign-in-up/sign-in-up.component';
 import {auth, createUserProfileDocument} from './firebase/firebase.utils';
+import { setCurrentUser } from './redux/user/user.actions';
 
 // class component so we can have access to state (for auth)
 class App extends React.Component {
-  constructor () {
-    super();
-  
-    this.state = {
-      currentUser: null
-    }
-  }
+
   // To close subscription of auth :
   unsubscribeFromAuth = null;
 
   componentDidMount() {
     
+    const { setCurrentUser } = this.props;
+
     //set user as current user when authentification is valid
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
 
@@ -33,24 +31,22 @@ class App extends React.Component {
         //snapshot allows to check if doc exist, and get data by data method
         userRef.onSnapshot(snapShot => {
           // get data of user in database 
-          this.setState({
-            currentUser: {
+          setCurrentUser ({
               id: snapShot.id,
               ...snapShot.data()
-            }
+            });
           });
-        });
-      }
+        }
       else {
-        this.setState({currentUser: userAuth });
+        setCurrentUser(userAuth);
       }
-    })
+    });
   }
 
   render() {
     return (
       <div >
-        <Header currentUser= {this.state.currentUser}/>
+        <Header />
         <Switch>
           <Route exact path='/' component={Homepage}/>
           <Route path='/shop' component={ShopPage}/>
@@ -61,4 +57,10 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const mapDispatchToProps = dispatch => ({
+  // dispatch() whatever object will be passed to reducer
+  setCurrentUser: user => dispatch(setCurrentUser(user))
+});
+
+// we don't need state so we put null
+export default connect(null, mapDispatchToProps) (App);
