@@ -2,6 +2,7 @@ import React from 'react';
 
 import './cart-item.styles.scss';
 
+// CartItem : image of item, price, name and quantity in cart.
 const CartItem = ({ item : { imageUrl, price, name, quantity }}) => (
     <div className = 'cart-item'>
         <img src={imageUrl} alt='item' />

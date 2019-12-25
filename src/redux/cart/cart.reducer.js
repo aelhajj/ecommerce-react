@@ -7,6 +7,7 @@ const INITIAL_STATE = {
     cartItems: [] 
 };
 
+// cartReducer : set actions for add item and toggle cart
 const cartReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case CartActionTypes.TOGGLE_CART_HIDDEN:
