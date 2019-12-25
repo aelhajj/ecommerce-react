@@ -10,6 +10,12 @@ export const selectCartItems = createSelector(
     (cart) => cart.cartItems
 );
 
+// export hidden argument from cart 
+export const selectCartHidden = createSelector(
+    [selectCart], 
+    cart => cart.hidden
+);
+
 // export quantity from reduce on cartItems
 export const selectCartItemsCount = createSelector(
     [selectCartItems],
